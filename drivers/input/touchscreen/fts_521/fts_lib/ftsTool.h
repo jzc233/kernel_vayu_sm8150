@@ -34,7 +34,7 @@ int u32ToU8(u32 src, u8 *dst);
 int u32ToU8_be(u32 src, u8 *dst);
 int u8ToU64_be(u8 *src, u64 *dest, int size);
 int u64ToU8_be(u64 src, u8 *dest, int size);
-int attempt_function(int(*code)(void), unsigned long wait_before_retry,
+int attempt_function(int (*code)(void), unsigned long wait_before_retry,
 		     int retry_count);
 int senseOn(void);
 int senseOff(void);

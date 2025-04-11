@@ -45,7 +45,7 @@ void logError(int force, const char *msg, ...)
 #ifdef DEBUG
 	    || 1
 #endif
-	    ) {
+	) {
 		va_list args;
 		va_start(args, msg);
 		vprintk(msg, args);
@@ -81,21 +81,20 @@ int dumpErrorInfo(u8 *outBuf, int size)
 
 	logError(0, "%s %s: Starting dump of error info...\n", tag, __func__);
 
-	ret =
-	    fts_writeReadU8UX(FTS_CMD_FRAMEBUFFER_R, BITS_16, ADDR_ERROR_DUMP,
-			      data, ERROR_DUMP_ROW_SIZE * ERROR_DUMP_COL_SIZE,
-			      DUMMY_FRAMEBUFFER);
+	ret = fts_writeReadU8UX(FTS_CMD_FRAMEBUFFER_R, BITS_16, ADDR_ERROR_DUMP,
+				data, ERROR_DUMP_ROW_SIZE * ERROR_DUMP_COL_SIZE,
+				DUMMY_FRAMEBUFFER);
 	if (ret < OK) {
 		logError(1, "%s %s: reading data ERROR %08X\n", tag, __func__,
 			 ret);
 		return ret;
 	} else {
 		if (outBuf != NULL) {
-			sign =
-			    size >
-			    ERROR_DUMP_ROW_SIZE *
-			    ERROR_DUMP_COL_SIZE ? ERROR_DUMP_ROW_SIZE *
-			    ERROR_DUMP_COL_SIZE : size;
+			sign = size > ERROR_DUMP_ROW_SIZE *
+						       ERROR_DUMP_COL_SIZE ?
+				       ERROR_DUMP_ROW_SIZE *
+					       ERROR_DUMP_COL_SIZE :
+				       size;
 			memcpy(outBuf, data, sign);
 			logError(0,
 				 "%s %s: error info copied in the buffer! \n",
@@ -104,15 +103,18 @@ int dumpErrorInfo(u8 *outBuf, int size)
 		logError(1, "%s %s: Error Info = \n", tag, __func__);
 		u8ToU32(data, &sign);
 		if (sign != ERROR_DUMP_SIGNATURE)
-			logError(1,
-				 "%s %s: Wrong Error Signature! Data may be invalid! \n",
-				 tag, __func__);
+			logError(
+				1,
+				"%s %s: Wrong Error Signature! Data may be invalid! \n",
+				tag, __func__);
 		else
-			logError(1,
-				 "%s %s: Error Signature OK! Data are valid! \n",
-				 tag, __func__);
+			logError(
+				1,
+				"%s %s: Error Signature OK! Data are valid! \n",
+				tag, __func__);
 
-		for (i = 0; i < ERROR_DUMP_ROW_SIZE * ERROR_DUMP_COL_SIZE; i++) {
+		for (i = 0; i < ERROR_DUMP_ROW_SIZE * ERROR_DUMP_COL_SIZE;
+		     i++) {
 			if (i % ERROR_DUMP_COL_SIZE == 0) {
 				logError(1, KERN_ERR "\n%s %s: %d) ", tag,
 					 __func__, i / ERROR_DUMP_COL_SIZE);
@@ -125,7 +127,6 @@ int dumpErrorInfo(u8 *outBuf, int size)
 			 __func__);
 		return OK;
 	}
-
 }
 
 /**
@@ -142,24 +143,26 @@ int errorHandler(u8 *event, int size)
 	if (getDev() != NULL)
 		info = dev_get_drvdata(getDev());
 
-	if (info != NULL && event != NULL && size > 1
-	    && event[0] == EVT_ID_ERROR) {
+	if (info != NULL && event != NULL && size > 1 &&
+	    event[0] == EVT_ID_ERROR) {
 		logError(0, "%s errorHandler: Starting handling...\n", tag);
 		addErrorIntoList(event, size);
 		switch (event[1]) {
 		case EVT_TYPE_ERROR_ESD:
 			res = fts_chip_powercycle(info);
 			if (res < OK) {
-				logError(1,
-					 "%s errorHandler: Error performing powercycle ERROR %08X\n",
-					 tag, res);
+				logError(
+					1,
+					"%s errorHandler: Error performing powercycle ERROR %08X\n",
+					tag, res);
 			}
 
 			res = fts_system_reset();
 			if (res < OK) {
-				logError(1,
-					 "%s errorHandler: Cannot reset the device ERROR %08X\n",
-					 tag, res);
+				logError(
+					1,
+					"%s errorHandler: Cannot reset the device ERROR %08X\n",
+					tag, res);
 			}
 			res = (ERROR_HANDLER_STOP_PROC | res);
 			break;
@@ -168,9 +171,10 @@ int errorHandler(u8 *event, int size)
 			dumpErrorInfo(NULL, 0);
 			res = fts_system_reset();
 			if (res < OK) {
-				logError(1,
-					 "%s errorHandler: Cannot reset the device ERROR %08X\n",
-					 tag, res);
+				logError(
+					1,
+					"%s errorHandler: Cannot reset the device ERROR %08X\n",
+					tag, res);
 			}
 			res = (ERROR_HANDLER_STOP_PROC | res);
 			break;
@@ -215,18 +219,17 @@ int errorHandler(u8 *event, int size)
 			logError(0, "%s errorHandler: No Action taken! \n",
 				 tag);
 			break;
-
 		}
 		logError(0, "%s errorHandler: handling Finished! res = %08X\n",
 			 tag, res);
 		return res;
 	} else {
-		logError(1,
-			 "%s errorHandler: event Null or not correct size! ERROR %08X \n",
-			 tag, ERROR_OP_NOT_ALLOW);
+		logError(
+			1,
+			"%s errorHandler: event Null or not correct size! ERROR %08X \n",
+			tag, ERROR_OP_NOT_ALLOW);
 		return ERROR_OP_NOT_ALLOW;
 	}
-
 }
 
 /**
@@ -254,9 +257,10 @@ int addErrorIntoList(u8 *event, int size)
 
 	errors.count += 1;
 	if (errors.count > FIFO_DEPTH)
-		logError(1,
-			 "%s ErrorList is going in overflow... the first %d event(s) were override!\n",
-			 tag, errors.count - FIFO_DEPTH);
+		logError(
+			1,
+			"%s ErrorList is going in overflow... the first %d event(s) were override!\n",
+			tag, errors.count - FIFO_DEPTH);
 	errors.last_index = (errors.last_index + 1) % FIFO_DEPTH;
 
 	return OK;
@@ -286,7 +290,6 @@ int getErrorListCount(void)
 		return errors.count;
 }
 
-
 /**
 * Scroll the Error List looking for the event specified
 * @param event_to_search event_to_search pointer to an array of int where each element correspond to a byte of the event to find. If the element of the array has value -1, the byte of the event, in the same position of the element is ignored.
@@ -302,10 +305,9 @@ int pollErrorList(int *event_to_search, int event_bytes)
 	while (find != 1 && i < count) {
 		find = 1;
 		for (j = 0; j < event_bytes; j++) {
-
-			if (event_to_search[i] != -1
-			    && (int)errors.list[i * FIFO_EVENT_SIZE + j] !=
-			    event_to_search[i]) {
+			if (event_to_search[i] != -1 &&
+			    (int)errors.list[i * FIFO_EVENT_SIZE + j] !=
+				    event_to_search[i]) {
 				find = 0;
 				break;
 			}
@@ -349,9 +351,10 @@ int pollForErrorType(u8 *list, int size)
 			 __func__, list[j]);
 		return list[j];
 	} else {
-		logError(0,
-			 "%s %s: Error Type Not Found into ErrorList! ERROR %08X \n",
-			 tag, __func__, ERROR_TIMEOUT);
+		logError(
+			0,
+			"%s %s: Error Type Not Found into ErrorList! ERROR %08X \n",
+			tag, __func__, ERROR_TIMEOUT);
 		return ERROR_TIMEOUT;
 	}
 }

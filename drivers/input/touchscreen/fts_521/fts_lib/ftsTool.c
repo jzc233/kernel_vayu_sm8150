@@ -68,9 +68,8 @@ char *printHex_data(char *label, u8 *buff, int count)
 	char *result = NULL;
 
 	offset = strlen(label);
-	result =
-	    (char *)kmalloc(((offset + 4 * count) + 1) * sizeof(char),
-			    GFP_KERNEL);
+	result = (char *)kmalloc(((offset + 4 * count) + 1) * sizeof(char),
+				 GFP_KERNEL);
 	if (result != NULL) {
 		strlcpy(result, label, offset);
 
@@ -79,7 +78,8 @@ char *printHex_data(char *label, u8 *buff, int count)
 			offset += 3;
 		}
 
-		strlcat(result, "\n", ((offset + 4 * count) + 1) * sizeof(char));
+		strlcat(result, "\n",
+			((offset + 4 * count) + 1) * sizeof(char));
 	}
 	return result;
 }
@@ -90,7 +90,6 @@ char *printHex_data(char *label, u8 *buff, int count)
  */
 int flushFIFO(void)
 {
-
 	int ret;
 	u8 sett = SPECIAL_FIFO_FLUSH;
 	ret = writeSysCmd(SYS_CMD_SPECIAL, &sett, 1);
@@ -101,7 +100,6 @@ int flushFIFO(void)
 
 	logError(0, "%s FIFO flushed! \n", tag);
 	return OK;
-
 }
 
 /**
@@ -119,11 +117,11 @@ int u8ToU16n(u8 *src, int src_length, u16 *dst)
 		return ERROR_OP_NOT_ALLOW;
 	} else {
 		j = 0;
-		dst =
-		    (u16 *) kmalloc((src_length / 2) * sizeof(u16), GFP_KERNEL);
+		dst = (u16 *)kmalloc((src_length / 2) * sizeof(u16),
+				     GFP_KERNEL);
 		for (i = 0; i < src_length; i += 2) {
-			dst[j] =
-			    ((src[i + 1] & 0x00FF) << 8) + (src[i] & 0x00FF);
+			dst[j] = ((src[i + 1] & 0x00FF) << 8) +
+				 (src[i] & 0x00FF);
 			j++;
 		}
 	}
@@ -139,7 +137,7 @@ int u8ToU16n(u8 *src, int src_length, u16 *dst)
 */
 int u8ToU16(u8 *src, u16 *dst)
 {
-	*dst = (u16) (((src[1] & 0x00FF) << 8) + (src[0] & 0x00FF));
+	*dst = (u16)(((src[1] & 0x00FF) << 8) + (src[0] & 0x00FF));
 	return OK;
 }
 
@@ -151,7 +149,7 @@ int u8ToU16(u8 *src, u16 *dst)
 */
 int u8ToU16_be(u8 *src, u16 *dst)
 {
-	*dst = (u16) (((src[0] & 0x00FF) << 8) + (src[1] & 0x00FF));
+	*dst = (u16)(((src[0] & 0x00FF) << 8) + (src[1] & 0x00FF));
 	return OK;
 }
 
@@ -165,11 +163,11 @@ int u8ToU16_be(u8 *src, u16 *dst)
 int u16ToU8n_be(u16 *src, int src_length, u8 *dst)
 {
 	int i, j;
-	dst = (u8 *) kmalloc((2 * src_length) * sizeof(u8), GFP_KERNEL);
+	dst = (u8 *)kmalloc((2 * src_length) * sizeof(u8), GFP_KERNEL);
 	j = 0;
 	for (i = 0; i < src_length; i++) {
-		dst[j] = (u8) (src[i] & 0xFF00) >> 8;
-		dst[j + 1] = (u8) (src[i] & 0x00FF);
+		dst[j] = (u8)(src[i] & 0xFF00) >> 8;
+		dst[j + 1] = (u8)(src[i] & 0x00FF);
 		j += 2;
 	}
 
@@ -184,8 +182,8 @@ int u16ToU8n_be(u16 *src, int src_length, u8 *dst)
 */
 int u16ToU8_be(u16 src, u8 *dst)
 {
-	dst[0] = (u8) ((src & 0xFF00) >> 8);
-	dst[1] = (u8) (src & 0x00FF);
+	dst[0] = (u8)((src & 0xFF00) >> 8);
+	dst[1] = (u8)(src & 0x00FF);
 	return OK;
 }
 
@@ -197,8 +195,8 @@ int u16ToU8_be(u16 src, u8 *dst)
 */
 int u16ToU8(u16 src, u8 *dst)
 {
-	dst[1] = (u8) ((src & 0xFF00) >> 8);
-	dst[0] = (u8) (src & 0x00FF);
+	dst[1] = (u8)((src & 0xFF00) >> 8);
+	dst[0] = (u8)(src & 0x00FF);
 	return OK;
 }
 
@@ -210,9 +208,8 @@ int u16ToU8(u16 src, u8 *dst)
 */
 int u8ToU32(u8 *src, u32 *dst)
 {
-	*dst =
-	    (u32) (((src[3] & 0xFF) << 24) + ((src[2] & 0xFF) << 16) +
-		   ((src[1] & 0xFF) << 8) + (src[0] & 0xFF));
+	*dst = (u32)(((src[3] & 0xFF) << 24) + ((src[2] & 0xFF) << 16) +
+		     ((src[1] & 0xFF) << 8) + (src[0] & 0xFF));
 	return OK;
 }
 
@@ -224,10 +221,10 @@ int u8ToU32(u8 *src, u32 *dst)
 */
 int u32ToU8(u32 src, u8 *dst)
 {
-	dst[3] = (u8) ((src & 0xFF000000) >> 24);
-	dst[2] = (u8) ((src & 0x00FF0000) >> 16);
-	dst[1] = (u8) ((src & 0x0000FF00) >> 8);
-	dst[0] = (u8) (src & 0x000000FF);
+	dst[3] = (u8)((src & 0xFF000000) >> 24);
+	dst[2] = (u8)((src & 0x00FF0000) >> 16);
+	dst[1] = (u8)((src & 0x0000FF00) >> 8);
+	dst[0] = (u8)(src & 0x000000FF);
 	return OK;
 }
 
@@ -239,10 +236,10 @@ int u32ToU8(u32 src, u8 *dst)
 */
 int u32ToU8_be(u32 src, u8 *dst)
 {
-	dst[0] = (u8) ((src & 0xFF000000) >> 24);
-	dst[1] = (u8) ((src & 0x00FF0000) >> 16);
-	dst[2] = (u8) ((src & 0x0000FF00) >> 8);
-	dst[3] = (u8) (src & 0x000000FF);
+	dst[0] = (u8)((src & 0xFF000000) >> 24);
+	dst[1] = (u8)((src & 0x00FF0000) >> 16);
+	dst[2] = (u8)((src & 0x0000FF00) >> 8);
+	dst[3] = (u8)(src & 0x000000FF);
 	return OK;
 }
 
@@ -253,7 +250,7 @@ int u32ToU8_be(u32 src, u8 *dst)
 * @param retry_count max number of retry to attemp
 * @return last return value obtained from the last execution of the code function
 */
-int attempt_function(int (*code) (void), unsigned long wait_before_retry,
+int attempt_function(int (*code)(void), unsigned long wait_before_retry,
 		     int retry_count)
 {
 	int result;
@@ -269,7 +266,6 @@ int attempt_function(int (*code) (void), unsigned long wait_before_retry,
 		return (result | ERROR_TIMEOUT);
 	else
 		return result;
-
 }
 
 /**
@@ -298,7 +294,8 @@ int senseOff(void)
 {
 	int ret;
 
-	ret = setScanMode(SCAN_MODE_ACTIVE, 0x00);;
+	ret = setScanMode(SCAN_MODE_ACTIVE, 0x00);
+	;
 	if (ret < OK) {
 		logError(1, "%s senseOff: ERROR %08X\n", tag, ret);
 		return ret;
@@ -332,7 +329,6 @@ int cleanUp(int enableTouch)
 			return res;
 	}
 	return OK;
-
 }
 
 /**
@@ -344,16 +340,13 @@ int cleanUp(int enableTouch)
 */
 short **array1dTo2d_short(short *data, int size, int columns)
 {
-
 	int i;
-	short **matrix =
-	    (short **)kmalloc(((int)(size / columns)) * sizeof(short *),
-			      GFP_KERNEL);
+	short **matrix = (short **)kmalloc(
+		((int)(size / columns)) * sizeof(short *), GFP_KERNEL);
 	if (matrix != NULL) {
 		for (i = 0; i < (int)(size / columns); i++) {
-			matrix[i] =
-			    (short *)kmalloc(columns * sizeof(short),
-					     GFP_KERNEL);
+			matrix[i] = (short *)kmalloc(columns * sizeof(short),
+						     GFP_KERNEL);
 		}
 
 		for (i = 0; i < size; i++) {
@@ -373,14 +366,13 @@ short **array1dTo2d_short(short *data, int size, int columns)
 */
 u16 **array1dTo2d_u16(u16 *data, int size, int columns)
 {
-
 	int i;
-	u16 **matrix = (u16 **) kmalloc(((int)(size / columns)) * sizeof(u16 *),
-					GFP_KERNEL);
+	u16 **matrix = (u16 **)kmalloc(((int)(size / columns)) * sizeof(u16 *),
+				       GFP_KERNEL);
 	if (matrix != NULL) {
 		for (i = 0; i < (int)(size / columns); i++) {
-			matrix[i] =
-			    (u16 *) kmalloc(columns * sizeof(u16), GFP_KERNEL);
+			matrix[i] = (u16 *)kmalloc(columns * sizeof(u16),
+						   GFP_KERNEL);
 		}
 
 		for (i = 0; i < size; i++) {
@@ -400,14 +392,13 @@ u16 **array1dTo2d_u16(u16 *data, int size, int columns)
 */
 u8 **array1dTo2d_u8(u8 *data, int size, int columns)
 {
-
 	int i;
-	u8 **matrix =
-	    (u8 **) kmalloc(((int)(size / columns)) * sizeof(u8 *), GFP_KERNEL);
+	u8 **matrix = (u8 **)kmalloc(((int)(size / columns)) * sizeof(u8 *),
+				     GFP_KERNEL);
 	if (matrix != NULL) {
 		for (i = 0; i < (int)(size / columns); i++) {
 			matrix[i] =
-			    (u8 *) kmalloc(columns * sizeof(u8), GFP_KERNEL);
+				(u8 *)kmalloc(columns * sizeof(u8), GFP_KERNEL);
 		}
 
 		for (i = 0; i < size; i++) {
@@ -427,14 +418,13 @@ u8 **array1dTo2d_u8(u8 *data, int size, int columns)
 */
 i8 **array1dTo2d_i8(i8 *data, int size, int columns)
 {
-
 	int i;
-	i8 **matrix =
-	    (i8 **) kmalloc(((int)(size / columns)) * sizeof(i8 *), GFP_KERNEL);
+	i8 **matrix = (i8 **)kmalloc(((int)(size / columns)) * sizeof(i8 *),
+				     GFP_KERNEL);
 	if (matrix != NULL) {
 		for (i = 0; i < (int)(size / columns); i++) {
 			matrix[i] =
-			    (i8 *) kmalloc(columns * sizeof(i8), GFP_KERNEL);
+				(i8 *)kmalloc(columns * sizeof(i8), GFP_KERNEL);
 		}
 
 		for (i = 0; i < size; i++) {
@@ -594,7 +584,7 @@ int u8ToU64_be(u8 *src, u64 *dest, int size)
 		*dest = 0;
 
 		for (i = 0; i < size; i++) {
-			*dest |= (u64) (src[i]) << ((size - 1 - i) * 8);
+			*dest |= (u64)(src[i]) << ((size - 1 - i) * 8);
 		}
 
 		return OK;
@@ -615,7 +605,7 @@ int u64ToU8_be(u64 src, u8 *dest, int size)
 		return ERROR_OP_NOT_ALLOW;
 	} else {
 		for (i = 0; i < size; i++) {
-			dest[i] = (u8) ((src >> ((size - 1 - i) * 8)) & 0xFF);
+			dest[i] = (u8)((src >> ((size - 1 - i) * 8)) & 0xFF);
 		}
 	}
 
@@ -639,10 +629,11 @@ int fromIDtoMask(u8 id, u8 *mask, int size)
 		mask[((int)((id) / 8))] |= 0x01 << (id % 8);
 		return OK;
 	} else {
-		logError(1,
-			 "%s %s: Bitmask too small! Impossible contain ID = %d %d>=%d! ERROR %08X\n",
-			 tag, __func__, id, ((int)((id) / 8)), size,
-			 ERROR_OP_NOT_ALLOW);
+		logError(
+			1,
+			"%s %s: Bitmask too small! Impossible contain ID = %d %d>=%d! ERROR %08X\n",
+			tag, __func__, id, ((int)((id) / 8)), size,
+			ERROR_OP_NOT_ALLOW);
 		return ERROR_OP_NOT_ALLOW;
 	}
 }

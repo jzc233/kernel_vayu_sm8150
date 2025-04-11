@@ -49,49 +49,57 @@ int updateGestureMask(u8 *mask, int size, int en)
 		if (size <= GESTURE_MASK_SIZE) {
 			if (en == FEAT_ENABLE) {
 				mutex_lock(&gestureMask_mutex);
-				logError(0,
-					 "%s updateGestureMask: setting gesture mask to enable...\n",
-					 tag);
+				logError(
+					0,
+					"%s updateGestureMask: setting gesture mask to enable...\n",
+					tag);
 				if (mask != NULL) {
 					for (i = 0; i < size; i++) {
-						gesture_mask[i] = gesture_mask[i] | mask[i];
+						gesture_mask[i] =
+							gesture_mask[i] |
+							mask[i];
 					}
 				}
 				refreshGestureMask = 1;
-				logError(0,
-					 "%s updateGestureMask: gesture mask to enable SET! \n",
-					 tag);
+				logError(
+					0,
+					"%s updateGestureMask: gesture mask to enable SET! \n",
+					tag);
 				mutex_unlock(&gestureMask_mutex);
 				return OK;
 			}
 
 			else if (en == FEAT_DISABLE) {
 				mutex_lock(&gestureMask_mutex);
-				logError(0,
-					 "%s updateGestureMask: setting gesture mask to disable...\n",
-					 tag);
+				logError(
+					0,
+					"%s updateGestureMask: setting gesture mask to disable...\n",
+					tag);
 				for (i = 0; i < size; i++) {
 					temp = gesture_mask[i] ^ mask[i];
-					gesture_mask[i] =
-					    temp & gesture_mask[i];
+					gesture_mask[i] = temp &
+							  gesture_mask[i];
 				}
-				logError(0,
-					 "%s updateGestureMask: gesture mask to disable SET! \n",
-					 tag);
+				logError(
+					0,
+					"%s updateGestureMask: gesture mask to disable SET! \n",
+					tag);
 				refreshGestureMask = 1;
 				mutex_unlock(&gestureMask_mutex);
 				return OK;
 			} else {
-				logError(1,
-					 "updateGestureMask: Enable parameter Invalid! %d != %d or %d ERROR %08X",
-					 tag, FEAT_DISABLE, FEAT_ENABLE,
-					 ERROR_OP_NOT_ALLOW);
+				logError(
+					1,
+					"updateGestureMask: Enable parameter Invalid! %d != %d or %d ERROR %08X",
+					tag, FEAT_DISABLE, FEAT_ENABLE,
+					ERROR_OP_NOT_ALLOW);
 				return ERROR_OP_NOT_ALLOW;
 			}
 		} else {
-			logError(1,
-				 "%s updateGestureMask: Size not valid! %d > %d ERROR %08X \n",
-				 tag, size, GESTURE_MASK_SIZE);
+			logError(
+				1,
+				"%s updateGestureMask: Size not valid! %d > %d ERROR %08X \n",
+				tag, size, GESTURE_MASK_SIZE);
 			return ERROR_OP_NOT_ALLOW;
 		}
 	} else {
@@ -99,7 +107,6 @@ int updateGestureMask(u8 *mask, int size, int en)
 			 tag, ERROR_OP_NOT_ALLOW);
 		return ERROR_OP_NOT_ALLOW;
 	}
-
 }
 
 /**
@@ -122,9 +129,8 @@ int enableGesture(u8 *mask, int size)
 			}
 		}
 
-		res =
-		    setFeatures(FEAT_SEL_GESTURE, gesture_mask,
-				GESTURE_MASK_SIZE);
+		res = setFeatures(FEAT_SEL_GESTURE, gesture_mask,
+				  GESTURE_MASK_SIZE);
 		if (res < OK) {
 			logError(1, "%s enableGesture: ERROR %08X \n", tag,
 				 res);
@@ -138,12 +144,12 @@ END:
 		mutex_unlock(&gestureMask_mutex);
 		return res;
 	} else {
-		logError(1,
-			 "%s enableGesture: Size not valid! %d > %d ERROR %08X \n",
-			 tag, size, GESTURE_MASK_SIZE);
+		logError(
+			1,
+			"%s enableGesture: Size not valid! %d > %d ERROR %08X \n",
+			tag, size, GESTURE_MASK_SIZE);
 		return ERROR_OP_NOT_ALLOW;
 	}
-
 }
 
 /**
@@ -164,7 +170,6 @@ int disableGesture(u8 *mask, int size)
 		mutex_lock(&gestureMask_mutex);
 		if (mask != NULL) {
 			for (i = 0; i < size; i++) {
-
 				temp = gesture_mask[i] ^ mask[i];
 				gesture_mask[i] = temp & gesture_mask[i];
 			}
@@ -190,9 +195,10 @@ END:
 		mutex_unlock(&gestureMask_mutex);
 		return res;
 	} else {
-		logError(1,
-			 "%s disableGesture: Size not valid! %d > %d ERROR %08X \n",
-			 tag, size, GESTURE_MASK_SIZE);
+		logError(
+			1,
+			"%s disableGesture: Size not valid! %d > %d ERROR %08X \n",
+			tag, size, GESTURE_MASK_SIZE);
 		return ERROR_OP_NOT_ALLOW;
 	}
 }
@@ -214,12 +220,12 @@ int enterGestureMode(int reload)
 	}
 
 	if (reload == 1 || refreshGestureMask == 1) {
-
 		res = enableGesture(NULL, 0);
 		if (res < OK) {
-			logError(1,
-				 "%s enterGestureMode: enableGesture ERROR %08X \n",
-				 tag, res);
+			logError(
+				1,
+				"%s enterGestureMode: enableGesture ERROR %08X \n",
+				tag, res);
 			goto END;
 		}
 
@@ -228,9 +234,10 @@ int enterGestureMode(int reload)
 
 	res = setScanMode(SCAN_MODE_LOW_POWER, 0);
 	if (res < OK) {
-		logError(1,
-			 "%s enterGestureMode: enter gesture mode ERROR %08X \n",
-			 tag, res);
+		logError(
+			1,
+			"%s enterGestureMode: enter gesture mode ERROR %08X \n",
+			tag, res);
 		goto END;
 	}
 
@@ -238,9 +245,10 @@ int enterGestureMode(int reload)
 END:
 	ret = fts_enableInterrupt();
 	if (ret < OK) {
-		logError(1,
-			 "%s enterGestureMode: fts_enableInterrupt ERROR %08X \n",
-			 tag, res | ERROR_ENABLE_INTER);
+		logError(
+			1,
+			"%s enterGestureMode: fts_enableInterrupt ERROR %08X \n",
+			tag, res | ERROR_ENABLE_INTER);
 		res |= ret | ERROR_ENABLE_INTER;
 	}
 
@@ -260,9 +268,10 @@ int isAnyGestureActive(void)
 	}
 
 	if (gesture_mask[res] != 0) {
-		logError(0,
-			 "%s %s: Active Gestures Found! gesture_mask[%d] = %02X !\n",
-			 tag, __func__, res, gesture_mask[res]);
+		logError(
+			0,
+			"%s %s: Active Gestures Found! gesture_mask[%d] = %02X !\n",
+			tag, __func__, res, gesture_mask[res]);
 		return FEAT_ENABLE;
 	} else {
 		logError(0, "%s %s: All Gestures Disabled!\n", tag, __func__);
@@ -283,40 +292,45 @@ int readGestureCoords(u8 *event)
 
 	u8 val[GESTURE_MAX_COORDS_PAIRS_REPORT * 4];
 
-	if (event[0] == EVT_ID_USER_REPORT && event[1] == EVT_TYPE_USER_GESTURE) {
+	if (event[0] == EVT_ID_USER_REPORT &&
+	    event[1] == EVT_TYPE_USER_GESTURE) {
 		address = (event[4] << 8) | event[3];
 		gesture_coords_reported = event[5];
 		if (gesture_coords_reported > GESTURE_MAX_COORDS_PAIRS_REPORT) {
-			logError(1,
-				 "%s %s:  FW reported more than %d points for the gestures! Decreasing to %d \n",
-				 tag, __func__, gesture_coords_reported,
-				 GESTURE_MAX_COORDS_PAIRS_REPORT);
+			logError(
+				1,
+				"%s %s:  FW reported more than %d points for the gestures! Decreasing to %d \n",
+				tag, __func__, gesture_coords_reported,
+				GESTURE_MAX_COORDS_PAIRS_REPORT);
 			gesture_coords_reported =
-			    GESTURE_MAX_COORDS_PAIRS_REPORT;
+				GESTURE_MAX_COORDS_PAIRS_REPORT;
 		}
 
 		logError(1, "%s %s: Offset: %08X , coords pairs = %d\n", tag,
 			 __func__, address, gesture_coords_reported);
 
-		res = fts_writeReadU8UX(FTS_CMD_FRAMEBUFFER_R, BITS_16, address, val, (gesture_coords_reported * 2 * 2), DUMMY_FRAMEBUFFER);
+		res = fts_writeReadU8UX(FTS_CMD_FRAMEBUFFER_R, BITS_16, address,
+					val, (gesture_coords_reported * 2 * 2),
+					DUMMY_FRAMEBUFFER);
 		if (res < OK) {
-			logError(1,
-				 "%s %s: Cannot read the coordinates! ERROR %08X  \n",
-				 tag, __func__, res);
+			logError(
+				1,
+				"%s %s: Cannot read the coordinates! ERROR %08X  \n",
+				tag, __func__, res);
 			gesture_coords_reported = ERROR_OP_NOT_ALLOW;
 			return res;
 		}
 
 		for (i = 0; i < gesture_coords_reported; i++) {
 			gesture_coordinates_x[i] =
-			    (((u16) val[i * 2 + 1]) & 0x0F) << 8 |
-			    (((u16) val[i * 2]) & 0xFF);
-			gesture_coordinates_y[i] = (((u16)
-						     val[gesture_coords_reported
-							 * 2 + i * 2 +
-							 1]) & 0x0F) << 8 |
-			    (((u16)
-			      val[gesture_coords_reported * 2 + i * 2]) & 0xFF);
+				(((u16)val[i * 2 + 1]) & 0x0F) << 8 |
+				(((u16)val[i * 2]) & 0xFF);
+			gesture_coordinates_y[i] =
+				(((u16)val[gesture_coords_reported * 2 + i * 2 +
+					   1]) &
+				 0x0F) << 8 |
+				(((u16)val[gesture_coords_reported * 2 + i * 2]) &
+				 0xFF);
 		}
 
 		logError(1, "%s %s: Reading Gesture Coordinates DONE!  \n", tag,
@@ -324,12 +338,12 @@ int readGestureCoords(u8 *event)
 		return OK;
 
 	} else {
-		logError(1,
-			 "%s %s: The event passsed as argument is invalid! ERROR %08X  \n",
-			 tag, __func__, ERROR_OP_NOT_ALLOW);
+		logError(
+			1,
+			"%s %s: The event passsed as argument is invalid! ERROR %08X  \n",
+			tag, __func__, ERROR_OP_NOT_ALLOW);
 		return ERROR_OP_NOT_ALLOW;
 	}
-
 }
 
 /**

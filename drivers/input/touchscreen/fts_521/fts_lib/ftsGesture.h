@@ -23,9 +23,9 @@
 
 #include "ftsHardware.h"
 
-#define	GESTURE_MASK_SIZE					4
+#define GESTURE_MASK_SIZE 4
 
-#define	GESTURE_MAX_COORDS_PAIRS_REPORT		100
+#define GESTURE_MAX_COORDS_PAIRS_REPORT 100
 
 int updateGestureMask(u8 *mask, int size, int en);
 int disableGesture(u8 *mask, int size);
