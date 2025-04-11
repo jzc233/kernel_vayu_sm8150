@@ -2741,6 +2741,24 @@ static ssize_t fts_touchgame_show(struct device *dev,
 #endif
 
 #ifdef CONFIG_SECURE_TOUCH
+struct fts_secure_delay {
+	bool palm_pending;
+	int palm_value;
+};
+
+struct fts_secure_info {
+	bool secure_inited;
+	atomic_t st_1st_complete;
+	atomic_t st_enabled;
+	atomic_t st_pending_irqs;
+	struct completion st_irq_processed;
+	struct completion st_powerdown;
+	struct fts_secure_delay scr_delay;
+	struct mutex palm_lock;
+	void *fts_info;
+};
+#endif
+#ifdef CONFIG_SECURE_TOUCH
 static void fts_secure_touch_notify (struct fts_ts_info *info)
 {
 	/*might sleep*/
